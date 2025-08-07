@@ -27,6 +27,50 @@ const FATE_ASPECTS = [
   "Harmony",
   "Courage"
 ];
+const generateFateThreadWithAI = async (user, stats, projects) => {
+  const createdAt = new Date(user.created_at);
+  const now = /* @__PURE__ */ new Date();
+  const accountAge = Math.round((now - createdAt) / (1e3 * 60 * 60 * 24));
+  const recentProjects = projects.slice(0, 3).map((p) => p.project.title).join(", ");
+  const systemPrompt = `You are a wise and ancient Moirai, one of the three Fates. Your task is to analyze a user's digital essence and weave their thread of destiny. Based on the provided metadata, you must determine their fate type (Clotho's Thread for new beginnings, Lachesis's Measure for established paths, Atropos's Cut for ancient legacies), their primary and secondary mystical aspects, a poetic description of their thread's creation, and a color representing their essence.
+    
+    Respond *only* with a JSON object in the following format, with no other text or explanation. The description should be 2-3 sentences and be mystical and evocative.
+    
+    {
+      "fate_type": "string",
+      "primary_aspect": "string",
+      "secondary_aspect": "string",
+      "description": "string",
+      "thread_color": "string (in hsl(h, s%, l%) format)"
+    }`;
+  const userPrompt = `A new soul, known as ${user.username}, has appeared before the loom of fate. Weave their destiny.
+    
+    Their metadata is as follows:
+    - Account Age: ${accountAge} days
+    - Total Views on their creations: ${stats.total_views}
+    - Total Likes on their creations: ${stats.total_likes}
+    - Titles of recent creations: ${recentProjects || "None yet spun"}
+    
+    Now, weave their thread and return the JSON that describes their fate.`;
+  const completion = await websim.chat.completions.create({
+    messages: [
+      { role: "system", content: systemPrompt },
+      { role: "user", content: userPrompt }
+    ],
+    json: true
+  });
+  const aiData = JSON.parse(completion.content);
+  return {
+    user_id: user.id,
+    username: user.username,
+    fate_type: aiData.fate_type,
+    primary_aspect: aiData.primary_aspect,
+    secondary_aspect: aiData.secondary_aspect,
+    description: aiData.description,
+    thread_strength: Math.min(accountAge / 365 * 100, 100),
+    thread_color: aiData.thread_color
+  };
+};
 function generateFateThread(user) {
   const createdAt = new Date(user.created_at);
   const now = /* @__PURE__ */ new Date();
@@ -137,7 +181,7 @@ function ThreadVisualization({ threads }) {
   }, [threads]);
   return /* @__PURE__ */ jsxDEV("div", { ref: containerRef, id: "canvas-container" }, void 0, false, {
     fileName: "<stdin>",
-    lineNumber: 160,
+    lineNumber: 211,
     columnNumber: 12
   }, this);
 }
@@ -155,7 +199,7 @@ function ThreadCard({ thread, onGenerateProphecy, isGeneratingProphecy }) {
         false,
         {
           fileName: "<stdin>",
-          lineNumber: 167,
+          lineNumber: 218,
           columnNumber: 17
         },
         this
@@ -166,44 +210,44 @@ function ThreadCard({ thread, onGenerateProphecy, isGeneratingProphecy }) {
           thread.username
         ] }, void 0, true, {
           fileName: "<stdin>",
-          lineNumber: 173,
+          lineNumber: 224,
           columnNumber: 21
         }, this),
         /* @__PURE__ */ jsxDEV("div", { className: "fate-type", children: thread.fate_type }, void 0, false, {
           fileName: "<stdin>",
-          lineNumber: 174,
+          lineNumber: 225,
           columnNumber: 21
         }, this)
       ] }, void 0, true, {
         fileName: "<stdin>",
-        lineNumber: 172,
+        lineNumber: 223,
         columnNumber: 17
       }, this)
     ] }, void 0, true, {
       fileName: "<stdin>",
-      lineNumber: 166,
+      lineNumber: 217,
       columnNumber: 13
     }, this),
     /* @__PURE__ */ jsxDEV("div", { className: "thread-content", children: [
       /* @__PURE__ */ jsxDEV("p", { className: "fate-description", children: thread.description }, void 0, false, {
         fileName: "<stdin>",
-        lineNumber: 178,
+        lineNumber: 229,
         columnNumber: 17
       }, this),
       thread.prophecy ? /* @__PURE__ */ jsxDEV("div", { className: "prophecy-section", children: [
         /* @__PURE__ */ jsxDEV("h4", { className: "prophecy-title", children: "A Glimpse of the Future..." }, void 0, false, {
           fileName: "<stdin>",
-          lineNumber: 182,
+          lineNumber: 233,
           columnNumber: 25
         }, this),
         /* @__PURE__ */ jsxDEV("p", { className: "prophecy-text", children: thread.prophecy }, void 0, false, {
           fileName: "<stdin>",
-          lineNumber: 183,
+          lineNumber: 234,
           columnNumber: 25
         }, this)
       ] }, void 0, true, {
         fileName: "<stdin>",
-        lineNumber: 181,
+        lineNumber: 232,
         columnNumber: 21
       }, this) : /* @__PURE__ */ jsxDEV(
         "button",
@@ -217,7 +261,7 @@ function ThreadCard({ thread, onGenerateProphecy, isGeneratingProphecy }) {
         false,
         {
           fileName: "<stdin>",
-          lineNumber: 186,
+          lineNumber: 237,
           columnNumber: 21
         },
         this
@@ -228,7 +272,7 @@ function ThreadCard({ thread, onGenerateProphecy, isGeneratingProphecy }) {
           thread.primary_aspect
         ] }, void 0, true, {
           fileName: "<stdin>",
-          lineNumber: 196,
+          lineNumber: 247,
           columnNumber: 21
         }, this),
         /* @__PURE__ */ jsxDEV("span", { children: [
@@ -237,22 +281,22 @@ function ThreadCard({ thread, onGenerateProphecy, isGeneratingProphecy }) {
           "%"
         ] }, void 0, true, {
           fileName: "<stdin>",
-          lineNumber: 197,
+          lineNumber: 248,
           columnNumber: 21
         }, this)
       ] }, void 0, true, {
         fileName: "<stdin>",
-        lineNumber: 195,
+        lineNumber: 246,
         columnNumber: 17
       }, this)
     ] }, void 0, true, {
       fileName: "<stdin>",
-      lineNumber: 177,
+      lineNumber: 228,
       columnNumber: 13
     }, this)
   ] }, void 0, true, {
     fileName: "<stdin>",
-    lineNumber: 165,
+    lineNumber: 216,
     columnNumber: 9
   }, this);
 }
@@ -367,7 +411,13 @@ function App() {
       }
       const userThread = threads?.find((t) => t.user_id === currentUser.id);
       if (userThread) {
-        setError("Your thread is already woven into the Great Tapestry.");
+        const card = document.getElementById(`thread-card-${userThread.id}`);
+        if (card) {
+          card.scrollIntoView({ behavior: "smooth", block: "center" });
+          card.classList.add("highlight");
+          setTimeout(() => card.classList.remove("highlight"), 2e3);
+        }
+        setError("Your thread is already woven. See its place in the tapestry below.");
         setIsWeaving(false);
         return;
       }
@@ -378,12 +428,17 @@ function App() {
         setIsWeaving(false);
         return;
       }
-      const fateThread = generateFateThread(fullCurrentUser);
+      const statsResponse = await fetch(`/api/v1/users/${fullCurrentUser.username}/stats`);
+      const statsData = await statsResponse.json();
+      const projectsResponse = await fetch(`/api/v1/users/${fullCurrentUser.username}/projects?posted=true&first=5`);
+      const projectsData = await projectsResponse.json();
+      const fateThread = await generateFateThreadWithAI(fullCurrentUser, statsData.stats, projectsData.projects.data);
       await room.collection("fate_thread").upsert({
         id: `thread_${fullCurrentUser.id}`,
         ...fateThread
       });
     } catch (err) {
+      console.error(err);
       setError("A tangle in the threads... failed to weave your fate: " + err.message);
     } finally {
       setIsWeaving(false);
@@ -393,22 +448,22 @@ function App() {
     /* @__PURE__ */ jsxDEV("header", { className: "header", children: [
       /* @__PURE__ */ jsxDEV("h1", { className: "title", children: "Threads of Fate" }, void 0, false, {
         fileName: "<stdin>",
-        lineNumber: 369,
+        lineNumber: 432,
         columnNumber: 17
       }, this),
       /* @__PURE__ */ jsxDEV("p", { className: "subtitle", children: "Woven by the Moirai from the essence of souls" }, void 0, false, {
         fileName: "<stdin>",
-        lineNumber: 370,
+        lineNumber: 433,
         columnNumber: 17
       }, this),
       /* @__PURE__ */ jsxDEV("p", { className: "description", children: "Behold the cosmic tapestry where each user's destiny is spun into golden threads by the three Fates: Clotho who spins, Lachesis who measures, and Atropos who cuts. Each thread tells a unique story, woven from the very metadata of existence." }, void 0, false, {
         fileName: "<stdin>",
-        lineNumber: 371,
+        lineNumber: 434,
         columnNumber: 17
       }, this)
     ] }, void 0, true, {
       fileName: "<stdin>",
-      lineNumber: 368,
+      lineNumber: 431,
       columnNumber: 13
     }, this),
     /* @__PURE__ */ jsxDEV("div", { className: "controls", children: [
@@ -424,7 +479,7 @@ function App() {
         false,
         {
           fileName: "<stdin>",
-          lineNumber: 379,
+          lineNumber: 442,
           columnNumber: 17
         },
         this
@@ -441,29 +496,29 @@ function App() {
         false,
         {
           fileName: "<stdin>",
-          lineNumber: 386,
+          lineNumber: 449,
           columnNumber: 17
         },
         this
       )
     ] }, void 0, true, {
       fileName: "<stdin>",
-      lineNumber: 378,
+      lineNumber: 441,
       columnNumber: 13
     }, this),
     error && /* @__PURE__ */ jsxDEV("div", { className: "error", children: error }, void 0, false, {
       fileName: "<stdin>",
-      lineNumber: 395,
+      lineNumber: 458,
       columnNumber: 23
     }, this),
     loading ? /* @__PURE__ */ jsxDEV("div", { className: "loading", children: "The Fates are consulting their tapestry..." }, void 0, false, {
       fileName: "<stdin>",
-      lineNumber: 398,
+      lineNumber: 461,
       columnNumber: 17
     }, this) : /* @__PURE__ */ jsxDEV(Fragment, { children: [
       /* @__PURE__ */ jsxDEV(ThreadVisualization, { threads: sortedThreads }, void 0, false, {
         fileName: "<stdin>",
-        lineNumber: 401,
+        lineNumber: 464,
         columnNumber: 21
       }, this),
       /* @__PURE__ */ jsxDEV("div", { className: "threads-container", children: sortedThreads.map((thread) => /* @__PURE__ */ jsxDEV(
@@ -477,65 +532,65 @@ function App() {
         false,
         {
           fileName: "<stdin>",
-          lineNumber: 405,
+          lineNumber: 468,
           columnNumber: 29
         },
         this
       )) }, void 0, false, {
         fileName: "<stdin>",
-        lineNumber: 403,
+        lineNumber: 466,
         columnNumber: 21
       }, this)
     ] }, void 0, true, {
       fileName: "<stdin>",
-      lineNumber: 400,
+      lineNumber: 463,
       columnNumber: 17
     }, this),
     /* @__PURE__ */ jsxDEV("div", { className: "moirai-info", children: [
       /* @__PURE__ */ jsxDEV("h2", { className: "moirai-title", children: "The Three Moirai" }, void 0, false, {
         fileName: "<stdin>",
-        lineNumber: 417,
+        lineNumber: 480,
         columnNumber: 17
       }, this),
       /* @__PURE__ */ jsxDEV("p", { className: "moirai-description", children: [
         "In ancient mythology, the Moirai were the three sister goddesses who controlled fate and destiny.",
         /* @__PURE__ */ jsxDEV("strong", { children: " Clotho" }, void 0, false, {
           fileName: "<stdin>",
-          lineNumber: 420,
+          lineNumber: 483,
           columnNumber: 21
         }, this),
         " spun the thread of life, ",
         /* @__PURE__ */ jsxDEV("strong", { children: "Lachesis" }, void 0, false, {
           fileName: "<stdin>",
-          lineNumber: 420,
+          lineNumber: 483,
           columnNumber: 71
         }, this),
         " measured its length and determined its course, and ",
         /* @__PURE__ */ jsxDEV("strong", { children: "Atropos" }, void 0, false, {
           fileName: "<stdin>",
-          lineNumber: 421,
+          lineNumber: 484,
           columnNumber: 52
         }, this),
         " cut it when the time came. Here, they work their magic on the digital souls of Websim, weaving threads from user creation dates, activity patterns, and the mystical essence of usernames themselves."
       ] }, void 0, true, {
         fileName: "<stdin>",
-        lineNumber: 418,
+        lineNumber: 481,
         columnNumber: 17
       }, this)
     ] }, void 0, true, {
       fileName: "<stdin>",
-      lineNumber: 416,
+      lineNumber: 479,
       columnNumber: 13
     }, this)
   ] }, void 0, true, {
     fileName: "<stdin>",
-    lineNumber: 367,
+    lineNumber: 430,
     columnNumber: 9
   }, this);
 }
 const root = createRoot(document.getElementById("root"));
 root.render(/* @__PURE__ */ jsxDEV(App, {}, void 0, false, {
   fileName: "<stdin>",
-  lineNumber: 431,
+  lineNumber: 494,
   columnNumber: 13
 }));

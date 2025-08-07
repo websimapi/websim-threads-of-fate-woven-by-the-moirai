@@ -163,6 +163,11 @@ body {
     transform: translateY(-5px);
 }
 
+.thread-card.highlight {
+    box-shadow: 0 0 30px #ffd700, 0 0 15px #d4af37 inset;
+    border-color: #ffd700;
+}
+
 .thread-card::before {
     content: '';
     position: absolute;
