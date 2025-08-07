@@ -23,7 +23,7 @@
           "description": "Primary aspect of the user's fate"
         },
         "secondary_aspect": {
-          "type": "text", 
+          "type": "text",
           "description": "Secondary aspect of the user's fate"
         },
         "description": {
@@ -37,10 +37,13 @@
         "thread_color": {
           "type": "text",
           "description": "Color of the thread in CSS format"
+        },
+        "prophecy": {
+          "type": "text",
+          "description": "An AI-generated prophecy about the user's future trajectory"
         }
       }
     },
-    "instructions": "This database stores mystical fate threads generated from user metadata. Each thread represents a user's destiny as woven by the three Moirai (Fates) from Greek mythology. Threads are categorized by fate type based on account age, and contain mystical descriptions generated from username characteristics and other metadata."
+    "instructions": "This database stores mystical fate threads generated from user metadata. Each thread represents a user's destiny as woven by the three Moirai (Fates) from Greek mythology. Threads are categorized by fate type based on account age, and contain mystical descriptions generated from username characteristics and other metadata. Prophecies can be generated to predict future events based on a user's trajectory."
   }
 }
-

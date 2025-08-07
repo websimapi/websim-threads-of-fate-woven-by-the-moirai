@@ -225,6 +225,40 @@ body {
     margin-bottom: 15px;
 }
 
+.prophecy-btn {
+    width: 100%;
+    margin: 10px 0;
+    background: linear-gradient(45deg, rgba(148, 114, 255, 0.2), rgba(148, 114, 255, 0.1));
+    border-color: #9472ff;
+    color: #c8b6ff;
+}
+
+.prophecy-btn:hover {
+    background: linear-gradient(45deg, rgba(148, 114, 255, 0.3), rgba(148, 114, 255, 0.2));
+    box-shadow: 0 0 20px rgba(148, 114, 255, 0.4);
+}
+
+.prophecy-section {
+    margin: 15px 0;
+    padding: 15px;
+    background: rgba(148, 114, 255, 0.05);
+    border-left: 3px solid #9472ff;
+    border-radius: 4px;
+}
+
+.prophecy-title {
+    font-size: 1rem;
+    color: #c8b6ff;
+    font-style: italic;
+    margin-bottom: 8px;
+}
+
+.prophecy-text {
+    font-size: 0.95rem;
+    line-height: 1.6;
+    color: rgba(200, 182, 255, 0.9);
+}
+
 .thread-stats {
     display: flex;
     justify-content: space-between;
@@ -305,4 +339,3 @@ body {
         font-size: 2rem;
     }
 }
-
