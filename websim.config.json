@@ -1,0 +1,46 @@
+{
+  "database": {
+    "schema": {
+      "fate_thread": {
+        "id": {
+          "type": "text",
+          "description": "Unique identifier for the fate thread"
+        },
+        "user_id": {
+          "type": "uuid",
+          "description": "ID of the user this thread belongs to"
+        },
+        "username": {
+          "type": "text",
+          "description": "Username of the thread owner"
+        },
+        "fate_type": {
+          "type": "text",
+          "description": "Type of fate thread (Clotho's, Lachesis's, or Atropos's)"
+        },
+        "primary_aspect": {
+          "type": "text",
+          "description": "Primary aspect of the user's fate"
+        },
+        "secondary_aspect": {
+          "type": "text", 
+          "description": "Secondary aspect of the user's fate"
+        },
+        "description": {
+          "type": "text",
+          "description": "Mystical description of the fate thread"
+        },
+        "thread_strength": {
+          "type": "numeric",
+          "description": "Strength of the thread based on account age and activity"
+        },
+        "thread_color": {
+          "type": "text",
+          "description": "Color of the thread in CSS format"
+        }
+      }
+    },
+    "instructions": "This database stores mystical fate threads generated from user metadata. Each thread represents a user's destiny as woven by the three Moirai (Fates) from Greek mythology. Threads are categorized by fate type based on account age, and contain mystical descriptions generated from username characteristics and other metadata."
+  }
+}
+
