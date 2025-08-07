@@ -260,7 +260,22 @@ function App() {
   const [isWeaving, setIsWeaving] = useState(false);
   const [error, setError] = useState(null);
   const [generatingProphecyFor, setGeneratingProphecyFor] = useState(null);
-  const { data: threads, loading } = useQuery(room.collection("fate_thread").sort("created_at", "desc"));
+  const { data: threads, loading } = useQuery(room.query(`
+        SELECT 
+            ft.id, 
+            ft.user_id, 
+            ft.username, 
+            ft.fate_type, 
+            ft.primary_aspect, 
+            ft.secondary_aspect, 
+            ft.description, 
+            ft.thread_strength, 
+            ft.thread_color, 
+            ft.prophecy,
+            ft.created_at
+        FROM public.fate_thread ft 
+        ORDER BY ft.created_at DESC
+    `));
   const { data: users } = useQuery(room.query("SELECT id, username, created_at FROM public.user LIMIT 50"));
   const sortedThreads = useMemo(() => {
     if (!threads) return [];
@@ -344,22 +359,22 @@ function App() {
     /* @__PURE__ */ jsxDEV("header", { className: "header", children: [
       /* @__PURE__ */ jsxDEV("h1", { className: "title", children: "Threads of Fate" }, void 0, false, {
         fileName: "<stdin>",
-        lineNumber: 307,
+        lineNumber: 323,
         columnNumber: 17
       }, this),
       /* @__PURE__ */ jsxDEV("p", { className: "subtitle", children: "Woven by the Moirai from the essence of souls" }, void 0, false, {
         fileName: "<stdin>",
-        lineNumber: 308,
+        lineNumber: 324,
         columnNumber: 17
       }, this),
       /* @__PURE__ */ jsxDEV("p", { className: "description", children: "Behold the cosmic tapestry where each user's destiny is spun into golden threads by the three Fates: Clotho who spins, Lachesis who measures, and Atropos who cuts. Each thread tells a unique story, woven from the very metadata of existence." }, void 0, false, {
         fileName: "<stdin>",
-        lineNumber: 309,
+        lineNumber: 325,
         columnNumber: 17
       }, this)
     ] }, void 0, true, {
       fileName: "<stdin>",
-      lineNumber: 306,
+      lineNumber: 322,
       columnNumber: 13
     }, this),
     /* @__PURE__ */ jsxDEV("div", { className: "controls", children: [
@@ -375,7 +390,7 @@ function App() {
         false,
         {
           fileName: "<stdin>",
-          lineNumber: 317,
+          lineNumber: 333,
           columnNumber: 17
         },
         this
@@ -392,29 +407,29 @@ function App() {
         false,
         {
           fileName: "<stdin>",
-          lineNumber: 324,
+          lineNumber: 340,
           columnNumber: 17
         },
         this
       )
     ] }, void 0, true, {
       fileName: "<stdin>",
-      lineNumber: 316,
+      lineNumber: 332,
       columnNumber: 13
     }, this),
     error && /* @__PURE__ */ jsxDEV("div", { className: "error", children: error }, void 0, false, {
       fileName: "<stdin>",
-      lineNumber: 333,
+      lineNumber: 349,
       columnNumber: 23
     }, this),
     loading ? /* @__PURE__ */ jsxDEV("div", { className: "loading", children: "The Fates are consulting their tapestry..." }, void 0, false, {
       fileName: "<stdin>",
-      lineNumber: 336,
+      lineNumber: 352,
       columnNumber: 17
     }, this) : /* @__PURE__ */ jsxDEV(Fragment, { children: [
       /* @__PURE__ */ jsxDEV(ThreadVisualization, { threads: sortedThreads }, void 0, false, {
         fileName: "<stdin>",
-        lineNumber: 339,
+        lineNumber: 355,
         columnNumber: 21
       }, this),
       /* @__PURE__ */ jsxDEV("div", { className: "threads-container", children: sortedThreads.map((thread) => /* @__PURE__ */ jsxDEV(
@@ -428,65 +443,65 @@ function App() {
         false,
         {
           fileName: "<stdin>",
-          lineNumber: 343,
+          lineNumber: 359,
           columnNumber: 29
         },
         this
       )) }, void 0, false, {
         fileName: "<stdin>",
-        lineNumber: 341,
+        lineNumber: 357,
         columnNumber: 21
       }, this)
     ] }, void 0, true, {
       fileName: "<stdin>",
-      lineNumber: 338,
+      lineNumber: 354,
       columnNumber: 17
     }, this),
     /* @__PURE__ */ jsxDEV("div", { className: "moirai-info", children: [
       /* @__PURE__ */ jsxDEV("h2", { className: "moirai-title", children: "The Three Moirai" }, void 0, false, {
         fileName: "<stdin>",
-        lineNumber: 355,
+        lineNumber: 371,
         columnNumber: 17
       }, this),
       /* @__PURE__ */ jsxDEV("p", { className: "moirai-description", children: [
         "In ancient mythology, the Moirai were the three sister goddesses who controlled fate and destiny.",
         /* @__PURE__ */ jsxDEV("strong", { children: " Clotho" }, void 0, false, {
           fileName: "<stdin>",
-          lineNumber: 358,
+          lineNumber: 374,
           columnNumber: 21
         }, this),
         " spun the thread of life, ",
         /* @__PURE__ */ jsxDEV("strong", { children: "Lachesis" }, void 0, false, {
           fileName: "<stdin>",
-          lineNumber: 358,
+          lineNumber: 374,
           columnNumber: 71
         }, this),
         " measured its length and determined its course, and ",
         /* @__PURE__ */ jsxDEV("strong", { children: "Atropos" }, void 0, false, {
           fileName: "<stdin>",
-          lineNumber: 359,
+          lineNumber: 375,
           columnNumber: 52
         }, this),
         " cut it when the time came. Here, they work their magic on the digital souls of Websim, weaving threads from user creation dates, activity patterns, and the mystical essence of usernames themselves."
       ] }, void 0, true, {
         fileName: "<stdin>",
-        lineNumber: 356,
+        lineNumber: 372,
         columnNumber: 17
       }, this)
     ] }, void 0, true, {
       fileName: "<stdin>",
-      lineNumber: 354,
+      lineNumber: 370,
       columnNumber: 13
     }, this)
   ] }, void 0, true, {
     fileName: "<stdin>",
-    lineNumber: 305,
+    lineNumber: 321,
     columnNumber: 9
   }, this);
 }
 const root = createRoot(document.getElementById("root"));
 root.render(/* @__PURE__ */ jsxDEV(App, {}, void 0, false, {
   fileName: "<stdin>",
-  lineNumber: 369,
+  lineNumber: 385,
   columnNumber: 13
 }));
