@@ -355,26 +355,60 @@ function App() {
       setGeneratingProphecyFor(null);
     }
   };
+  const weaveMyThread = async () => {
+    setIsWeaving(true);
+    setError(null);
+    try {
+      const currentUser = await window.websim.getCurrentUser();
+      if (!currentUser) {
+        setError("You must be logged in to find your thread in the tapestry.");
+        setIsWeaving(false);
+        return;
+      }
+      const userThread = threads?.find((t) => t.user_id === currentUser.id);
+      if (userThread) {
+        setError("Your thread is already woven into the Great Tapestry.");
+        setIsWeaving(false);
+        return;
+      }
+      const userDetailsQuery = await room.query("SELECT id, username, created_at FROM public.user WHERE id = $1", [currentUser.id]);
+      const fullCurrentUser = userDetailsQuery[0];
+      if (!fullCurrentUser) {
+        setError("Could not find your essence in the loom of fate. Please try again.");
+        setIsWeaving(false);
+        return;
+      }
+      const fateThread = generateFateThread(fullCurrentUser);
+      await room.collection("fate_thread").upsert({
+        id: `thread_${fullCurrentUser.id}`,
+        ...fateThread
+      });
+    } catch (err) {
+      setError("A tangle in the threads... failed to weave your fate: " + err.message);
+    } finally {
+      setIsWeaving(false);
+    }
+  };
   return /* @__PURE__ */ jsxDEV("div", { children: [
     /* @__PURE__ */ jsxDEV("header", { className: "header", children: [
       /* @__PURE__ */ jsxDEV("h1", { className: "title", children: "Threads of Fate" }, void 0, false, {
         fileName: "<stdin>",
-        lineNumber: 323,
+        lineNumber: 369,
         columnNumber: 17
       }, this),
       /* @__PURE__ */ jsxDEV("p", { className: "subtitle", children: "Woven by the Moirai from the essence of souls" }, void 0, false, {
         fileName: "<stdin>",
-        lineNumber: 324,
+        lineNumber: 370,
         columnNumber: 17
       }, this),
       /* @__PURE__ */ jsxDEV("p", { className: "description", children: "Behold the cosmic tapestry where each user's destiny is spun into golden threads by the three Fates: Clotho who spins, Lachesis who measures, and Atropos who cuts. Each thread tells a unique story, woven from the very metadata of existence." }, void 0, false, {
         fileName: "<stdin>",
-        lineNumber: 325,
+        lineNumber: 371,
         columnNumber: 17
       }, this)
     ] }, void 0, true, {
       fileName: "<stdin>",
-      lineNumber: 322,
+      lineNumber: 368,
       columnNumber: 13
     }, this),
     /* @__PURE__ */ jsxDEV("div", { className: "controls", children: [
@@ -382,15 +416,15 @@ function App() {
         "button",
         {
           className: "btn primary",
-          onClick: weaveNewThreads,
+          onClick: weaveMyThread,
           disabled: isWeaving,
-          children: isWeaving ? "Weaving..." : "Weave New Threads"
+          children: isWeaving ? "Weaving..." : "Weave My Thread"
         },
         void 0,
         false,
         {
           fileName: "<stdin>",
-          lineNumber: 333,
+          lineNumber: 379,
           columnNumber: 17
         },
         this
@@ -407,29 +441,29 @@ function App() {
         false,
         {
           fileName: "<stdin>",
-          lineNumber: 340,
+          lineNumber: 386,
           columnNumber: 17
         },
         this
       )
     ] }, void 0, true, {
       fileName: "<stdin>",
-      lineNumber: 332,
+      lineNumber: 378,
       columnNumber: 13
     }, this),
     error && /* @__PURE__ */ jsxDEV("div", { className: "error", children: error }, void 0, false, {
       fileName: "<stdin>",
-      lineNumber: 349,
+      lineNumber: 395,
       columnNumber: 23
     }, this),
     loading ? /* @__PURE__ */ jsxDEV("div", { className: "loading", children: "The Fates are consulting their tapestry..." }, void 0, false, {
       fileName: "<stdin>",
-      lineNumber: 352,
+      lineNumber: 398,
       columnNumber: 17
     }, this) : /* @__PURE__ */ jsxDEV(Fragment, { children: [
       /* @__PURE__ */ jsxDEV(ThreadVisualization, { threads: sortedThreads }, void 0, false, {
         fileName: "<stdin>",
-        lineNumber: 355,
+        lineNumber: 401,
         columnNumber: 21
       }, this),
       /* @__PURE__ */ jsxDEV("div", { className: "threads-container", children: sortedThreads.map((thread) => /* @__PURE__ */ jsxDEV(
@@ -443,65 +477,65 @@ function App() {
         false,
         {
           fileName: "<stdin>",
-          lineNumber: 359,
+          lineNumber: 405,
           columnNumber: 29
         },
         this
       )) }, void 0, false, {
         fileName: "<stdin>",
-        lineNumber: 357,
+        lineNumber: 403,
         columnNumber: 21
       }, this)
     ] }, void 0, true, {
       fileName: "<stdin>",
-      lineNumber: 354,
+      lineNumber: 400,
       columnNumber: 17
     }, this),
     /* @__PURE__ */ jsxDEV("div", { className: "moirai-info", children: [
       /* @__PURE__ */ jsxDEV("h2", { className: "moirai-title", children: "The Three Moirai" }, void 0, false, {
         fileName: "<stdin>",
-        lineNumber: 371,
+        lineNumber: 417,
         columnNumber: 17
       }, this),
       /* @__PURE__ */ jsxDEV("p", { className: "moirai-description", children: [
         "In ancient mythology, the Moirai were the three sister goddesses who controlled fate and destiny.",
         /* @__PURE__ */ jsxDEV("strong", { children: " Clotho" }, void 0, false, {
           fileName: "<stdin>",
-          lineNumber: 374,
+          lineNumber: 420,
           columnNumber: 21
         }, this),
         " spun the thread of life, ",
         /* @__PURE__ */ jsxDEV("strong", { children: "Lachesis" }, void 0, false, {
           fileName: "<stdin>",
-          lineNumber: 374,
+          lineNumber: 420,
           columnNumber: 71
         }, this),
         " measured its length and determined its course, and ",
         /* @__PURE__ */ jsxDEV("strong", { children: "Atropos" }, void 0, false, {
           fileName: "<stdin>",
-          lineNumber: 375,
+          lineNumber: 421,
           columnNumber: 52
         }, this),
         " cut it when the time came. Here, they work their magic on the digital souls of Websim, weaving threads from user creation dates, activity patterns, and the mystical essence of usernames themselves."
       ] }, void 0, true, {
         fileName: "<stdin>",
-        lineNumber: 372,
+        lineNumber: 418,
         columnNumber: 17
       }, this)
     ] }, void 0, true, {
       fileName: "<stdin>",
-      lineNumber: 370,
+      lineNumber: 416,
       columnNumber: 13
     }, this)
   ] }, void 0, true, {
     fileName: "<stdin>",
-    lineNumber: 321,
+    lineNumber: 367,
     columnNumber: 9
   }, this);
 }
 const root = createRoot(document.getElementById("root"));
 root.render(/* @__PURE__ */ jsxDEV(App, {}, void 0, false, {
   fileName: "<stdin>",
-  lineNumber: 385,
+  lineNumber: 431,
   columnNumber: 13
 }));
